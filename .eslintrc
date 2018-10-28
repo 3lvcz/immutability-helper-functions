@@ -1,0 +1,18 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "prettier"
+  ],
+  "env": {
+    "mocha": true,
+    "node": true
+  },
+  "plugins": ["import", "prettier"],
+  "parser": "babel-eslint",
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}
