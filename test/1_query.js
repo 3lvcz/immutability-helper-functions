@@ -8,7 +8,11 @@ import {
 
 function runPaths(path, fn) {
   fn(path);
-  fn(path.join("."));
+  if (Array.isArray(path)) {
+    fn(path.join("."));
+  } else {
+    fn([path]);
+  }
 }
 
 function createTestWithPayload(
@@ -18,6 +22,15 @@ function createTestWithPayload(
   srcPayload = expectPayload
 ) {
   it(`should create query to ${action}`, () => {
+    function runPrimitivePath(value, key) {
+      runPaths(value, p =>
+        expect(toUpdateQuery(cmd, p, srcPayload)).toEqual({
+          [key]: {
+            [cmd]: expectPayload
+          }
+        })
+      );
+    }
     runPaths([], p =>
       expect(toUpdateQuery(cmd, p, srcPayload)).toEqual({
         [cmd]: expectPayload
@@ -30,15 +43,21 @@ function createTestWithPayload(
         }
       })
     );
-    runPaths(["A", "B"], p =>
+    runPaths(["A", 91, "B"], p =>
       expect(toUpdateQuery(cmd, p, srcPayload)).toEqual({
         A: {
-          B: {
-            [cmd]: expectPayload
+          91: {
+            B: {
+              [cmd]: expectPayload
+            }
           }
         }
       })
     );
+    runPrimitivePath(0, "0");
+    runPrimitivePath(91, "91");
+    runPrimitivePath(false, "false");
+    runPrimitivePath(true, "true");
   });
 }
 

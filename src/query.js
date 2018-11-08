@@ -9,12 +9,13 @@ export function tail(arr, offset = 0) {
 }
 
 export function resolvePathKeys(path) {
-  if (!path) {
+  if (path == null || !path.toString) {
     return [];
   }
-  return (Array.isArray(path) ? path : path.split(".")).map(seg =>
-    seg.toString()
-  );
+  if (Array.isArray(path)) {
+    return path.length ? path.map(seg => seg.toString()) : [];
+  }
+  return path === "" ? [] : path.toString().split(".");
 }
 
 export function createTreeList(pathKeys) {
